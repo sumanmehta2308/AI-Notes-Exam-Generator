@@ -11,12 +11,26 @@ import notesRouter from "./routes/generateRoutes.js";
 import historyRouter from "./routes/historyRoutes.js";
 import pdfRouter from "./routes/pdfRoutes.js";
 import creditRouter from "./routes/creditsRoutes.js";
+
 const app = express();
+
+// 1. ADD THIS MIDDLEWARE to fix the window.close() COOP errors
+app.use((req, res, next) => {
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+  res.setHeader("Cross-Origin-Embedder-Policy", "unsafe-none");
+  next();
+});
+
 app.use(express.json());
 app.use(cookieParser());
+
+// CORS configuration remains the same
 app.use(
   cors({
-    origin:["https://ai-notes-exam-generator.vercel.app","http://localhost:5173"],
+    origin: [
+      "https://ai-notes-exam-generator.vercel.app",
+      "http://localhost:5173",
+    ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   })
@@ -47,5 +61,4 @@ const startServer = async () => {
     console.error("Startup Failed", error);
   }
 };
-
 startServer();
